@@ -29,23 +29,33 @@ scene.add(mesh) */
 /**
  * Loaders
  */
- const dracoLoader = new DRACOLoader()
- dracoLoader.setDecoderPath('draco/')
- 
- // GLTF loader
- const gltfLoader = new GLTFLoader()
- gltfLoader.setDRACOLoader(dracoLoader)
+const dracoLoader = new DRACOLoader()
+dracoLoader.setDecoderPath('draco/')
+
+// GLTF loader
+const gltfLoader = new GLTFLoader()
+gltfLoader.setDRACOLoader(dracoLoader)
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 3)
 scene.add(ambientLight)
 
 const ticket = new THREE.Group()
+const rulantica = new THREE.Group()
+
 gltfLoader.load(
     'ticket.glb',
     (gltf) => {
-        gltf.scene.rotation.x = Math.PI/ 2
-        gltf.scene.rotation.y = Math.PI/ 4
+        gltf.scene.rotation.x = Math.PI / 2
+        gltf.scene.rotation.y = Math.PI / 4
         ticket.add(gltf.scene)
+    }
+)
+gltfLoader.load(
+    'rulantica.glb',
+    (gltf) => {
+        gltf.scene.rotation.x = Math.PI / 2
+        // gltf.scene.rotation.y = Math.PI/ 4
+        rulantica.add(gltf.scene)
     }
 )
 scene.add(ticket)
@@ -53,10 +63,11 @@ scene.add(ticket)
 let touch = 0
 window.addEventListener('touchstart', () => {
     touch++
-    if(touch >= 10) {
+    if (touch >= 10) {
         scene.remove(ticket)
+        scene.add(rulantica)
     }
-    
+
 
 })
 
@@ -119,6 +130,10 @@ const tick = () => {
     ticket.rotation.x = elapsedTime / 2
     ticket.rotation.y = elapsedTime / 4
 
+    if (touch >= 10) {
+        const scale = Math.sin(elapsedTime) * 2
+        rulantica.children[0].scale.set(scale, scale, scale)
+    }
     // Render
     renderer.render(scene, camera)
 
