@@ -43,7 +43,7 @@ const ticket = new THREE.Group()
 const rulantica = new THREE.Group()
 
 gltfLoader.load(
-    'ticket.glb',
+    'ticket-2.glb',
     (gltf) => {
         gltf.scene.rotation.x = Math.PI / 2
         gltf.scene.rotation.y = Math.PI / 4
@@ -70,6 +70,18 @@ window.addEventListener('touchstart', () => {
 
 
 })
+
+const cubeTextureLoader = new THREE.CubeTextureLoader()
+const environmentMap = cubeTextureLoader.load([
+    '/backgrounds/1/px.png',
+    '/backgrounds/1/nx.png',
+    '/backgrounds/1/py.png',
+    '/backgrounds/1/ny.png',
+    '/backgrounds/1/pz.png',
+    '/backgrounds/1/nz.png'
+])
+
+scene.background = environmentMap
 
 
 /**
@@ -131,8 +143,9 @@ const tick = () => {
     ticket.rotation.y = elapsedTime / 4
 
     if (touch >= 10) {
-        const scale = Math.sin(elapsedTime) * 2
+        const scale = (Math.sin(elapsedTime) + 1)
         rulantica.children[0].scale.set(scale, scale, scale)
+        rulantica.rotation.z = elapsedTime
     }
     // Render
     renderer.render(scene, camera)
